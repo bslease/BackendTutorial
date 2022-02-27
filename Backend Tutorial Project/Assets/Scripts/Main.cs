@@ -5,17 +5,14 @@ using UnityEngine;
 public class Main : MonoBehaviour
 {
     public static Main Instance;
+
     public Web Web;
+    public UserInfo UserInfo;
 
     void Start()
     {
         Instance = this;
         Web = GetComponent<Web>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        UserInfo = GetComponent<UserInfo>();
     }
 }

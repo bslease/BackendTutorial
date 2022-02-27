@@ -20,6 +20,11 @@ public class Web : MonoBehaviour
         //StartCoroutine(RegisterUser("testuser3", "123456"));
     }
 
+    public void ShowUserItems()
+    {
+        StartCoroutine(GetItemsIDs(Main.Instance.UserInfo.UserID));
+    }
+
     IEnumerator GetDate(string uri)
     {
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
@@ -89,6 +94,8 @@ public class Web : MonoBehaviour
             else
             {
                 Debug.Log(www.downloadHandler.text);
+                Main.Instance.UserInfo.SetCredentials(username, password);
+                Main.Instance.UserInfo.SetID(www.downloadHandler.text);
             }
         }
     }
@@ -113,4 +120,38 @@ public class Web : MonoBehaviour
             }
         }
     }
+
+    IEnumerator GetItemsIDs(string userID)
+    {
+        string uri = "http://localhost/unitybackendtutorial/GetItemsIDs.php";
+        WWWForm form = new WWWForm();
+        form.AddField("userID", userID);
+
+        using (UnityWebRequest webRequest = UnityWebRequest.Post(uri, form))
+        {
+            // Request and wait for the desired page.
+            yield return webRequest.SendWebRequest();
+
+            string[] pages = uri.Split('/');
+            int page = pages.Length - 1;
+
+            switch (webRequest.result)
+            {
+                case UnityWebRequest.Result.ConnectionError:
+                case UnityWebRequest.Result.DataProcessingError:
+                    Debug.LogError(pages[page] + ": Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.ProtocolError:
+                    Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.Success:
+                    // Show results as text
+                    Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
+                    string jsonArray = webRequest.downloadHandler.text;
+                    // Call callback function to pass results
+                    break;
+            }
+        }
+    }
+
 }
