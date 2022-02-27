@@ -8,6 +8,9 @@ public class Main : MonoBehaviour
 
     public Web Web;
     public UserInfo UserInfo;
+    public Login Login;
+
+    public GameObject UserProfile;
 
     void Start()
     {
