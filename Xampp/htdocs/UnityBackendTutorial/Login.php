@@ -1,17 +1,10 @@
 <?php
 
-//Variables for connecting to DB
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "unitybackendtutorial";
+require 'ConnectionSettings.php';
 
 //variables submitted by user
 $loginUser = $_POST["loginUser"];
 $loginPass = $_POST["loginPass"];
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
 
 // Check connection
 if ($conn->connect_error) {
