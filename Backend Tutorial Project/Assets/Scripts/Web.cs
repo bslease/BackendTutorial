@@ -157,7 +157,7 @@ public class Web : MonoBehaviour
                     break;
                 case UnityWebRequest.Result.Success:
                     // Show results as text
-                    //Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
+                    Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
                     string jsonArray = webRequest.downloadHandler.text;
                     // Call callback function to pass results
                     callback(jsonArray);
@@ -200,4 +200,37 @@ public class Web : MonoBehaviour
         }
     }
 
+    public IEnumerator SellItem(string ID, string itemID, string userID)
+    {
+        string uri = "http://localhost/unitybackendtutorial/SellItem.php";
+        WWWForm form = new WWWForm();
+        form.AddField("ID", ID);
+        form.AddField("itemID", itemID);
+        form.AddField("userID", userID);
+
+        using (UnityWebRequest webRequest = UnityWebRequest.Post(uri, form))
+        {
+            // Request and wait for the desired page.
+            yield return webRequest.SendWebRequest();
+
+            string[] pages = uri.Split('/');
+            int page = pages.Length - 1;
+
+            switch (webRequest.result)
+            {
+                case UnityWebRequest.Result.ConnectionError:
+                case UnityWebRequest.Result.DataProcessingError:
+                    Debug.LogError(pages[page] + ": Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.ProtocolError:
+                    Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.Success:
+                    // Show results as text
+                    Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
+
+                    break;
+            }
+        }
+    }
 }

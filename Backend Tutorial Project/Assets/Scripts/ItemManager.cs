@@ -5,7 +5,7 @@ using System;
 using SimpleJSON;
 using UnityEngine.UI;
 
-public class Items : MonoBehaviour
+public class ItemManager : MonoBehaviour
 {
     Action<string> _createItemsCallback;
 
@@ -35,6 +35,7 @@ public class Items : MonoBehaviour
             //Create local variables
             bool isDone = false;    // are we done downloading?
             string itemId = jsonArray[i].AsObject["itemID"];
+            string id = jsonArray[i].AsObject["ID"];
             JSONObject itemInfoJson = new JSONObject();
 
             //Create a callback to get the information from Web.cs
@@ -52,15 +53,27 @@ public class Items : MonoBehaviour
             yield return new WaitUntil(() => isDone == true);
 
             //Instantiate GameObject (item prefab)
-            GameObject item = Instantiate(Resources.Load("Prefabs/Item") as GameObject);
-            item.transform.SetParent(this.transform);
-            item.transform.localScale = Vector3.one;
-            item.transform.localPosition = Vector3.zero;
+            GameObject itemGo = Instantiate(Resources.Load("Prefabs/Item") as GameObject);
+            Item item = itemGo.AddComponent<Item>();
+            item.ID = id;
+            item.ItemID = itemId;
+            itemGo.transform.SetParent(this.transform);
+            itemGo.transform.localScale = Vector3.one;
+            itemGo.transform.localPosition = Vector3.zero;
 
             //Fill information
-            item.transform.Find("Name").GetComponent<Text>().text = itemInfoJson["name"];
-            item.transform.Find("Price").GetComponent<Text>().text = itemInfoJson["price"];
-            item.transform.Find("Description").GetComponent<Text>().text = itemInfoJson["description"];
+            itemGo.transform.Find("Name").GetComponent<Text>().text = itemInfoJson["name"];
+            itemGo.transform.Find("Price").GetComponent<Text>().text = itemInfoJson["price"];
+            itemGo.transform.Find("Description").GetComponent<Text>().text = itemInfoJson["description"];
+
+            //Set Sell button
+            itemGo.transform.Find("SellButton").GetComponent<Button>().onClick.AddListener(() =>
+            {
+                string idInInventory = id;
+                string iId = itemId;
+                string userId = Main.Instance.UserInfo.UserID;
+                StartCoroutine(Main.Instance.Web.SellItem(idInInventory, itemId, userId));
+            });
 
             // continue to next item
         }

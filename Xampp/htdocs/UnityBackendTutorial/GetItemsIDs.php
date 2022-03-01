@@ -10,7 +10,7 @@ if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = "SELECT itemID FROM usersitems WHERE userID = '" . $userID . "'";
+$sql = "SELECT ID, itemID FROM usersitems WHERE userID = '" . $userID . "'";
 
 $result = $conn->query($sql);
 
