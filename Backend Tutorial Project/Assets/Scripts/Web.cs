@@ -5,8 +5,15 @@ using UnityEngine.Networking;
 
 public class Web : MonoBehaviour
 {
+    public bool UseExternalDB = false;
+    string internalDomain = "http://localhost/UnityBackendTutorial/";
+    string externalDomain = "https://backendtutorial.000webhostapp.com/";
+    string urlHeader;
+
     void Start()
     {
+        urlHeader = UseExternalDB ? externalDomain : internalDomain;
+
         //// A correct website page.
         //StartCoroutine(GetRequest("https://www.example.com"));
 
@@ -83,7 +90,7 @@ public class Web : MonoBehaviour
         form.AddField("loginUser", username);
         form.AddField("loginPass", password);
 
-        using (UnityWebRequest www = UnityWebRequest.Post("http://localhost/UnityBackendTutorial/Login.php", form))
+        using (UnityWebRequest www = UnityWebRequest.Post(urlHeader + "Login.php", form))
         {
             yield return www.SendWebRequest();
 
@@ -117,7 +124,7 @@ public class Web : MonoBehaviour
         form.AddField("loginUser", username);
         form.AddField("loginPass", password);
 
-        using (UnityWebRequest www = UnityWebRequest.Post("http://localhost/UnityBackendTutorial/RegisterUser.php", form))
+        using (UnityWebRequest www = UnityWebRequest.Post(urlHeader + "RegisterUser.php", form))
         {
             yield return www.SendWebRequest();
 
@@ -134,7 +141,7 @@ public class Web : MonoBehaviour
 
     public IEnumerator GetItemsIDs(string userID, System.Action<string> callback)
     {
-        string uri = "http://localhost/unitybackendtutorial/GetItemsIDs.php";
+        string uri = urlHeader + "GetItemsIDs.php";
         WWWForm form = new WWWForm();
         form.AddField("userID", userID);
 
@@ -168,7 +175,7 @@ public class Web : MonoBehaviour
 
     public IEnumerator GetItem(string itemID, System.Action<string> callback)
     {
-        string uri = "http://localhost/unitybackendtutorial/GetItem.php";
+        string uri = urlHeader + "GetItem.php";
         WWWForm form = new WWWForm();
         form.AddField("itemID", itemID);
 
@@ -202,7 +209,7 @@ public class Web : MonoBehaviour
 
     public IEnumerator SellItem(string ID, string itemID, string userID)
     {
-        string uri = "http://localhost/unitybackendtutorial/SellItem.php";
+        string uri = urlHeader + "SellItem.php";
         WWWForm form = new WWWForm();
         form.AddField("ID", ID);
         form.AddField("itemID", itemID);
