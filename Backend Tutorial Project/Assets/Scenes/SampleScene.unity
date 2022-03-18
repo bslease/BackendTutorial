@@ -1714,6 +1714,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfab8f9fe3c808941b494f0e8fabf906, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UseExternalDB: 1
 --- !u!4 &737027360
 Transform:
   m_ObjectHideFlags: 0
