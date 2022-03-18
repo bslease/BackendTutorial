@@ -207,6 +207,46 @@ public class Web : MonoBehaviour
         }
     }
 
+    public IEnumerator GetItemIcon(string itemID, System.Action<Sprite> callback)
+    {
+        string uri = urlHeader + "GetItemIcon.php";
+        WWWForm form = new WWWForm();
+        form.AddField("itemID", itemID);
+        form.AddField("urlHeader", urlHeader);
+
+        using (UnityWebRequest webRequest = UnityWebRequest.Post(uri, form))
+        {
+            // Request and wait for the desired page.
+            yield return webRequest.SendWebRequest();
+
+            string[] pages = uri.Split('/');
+            int page = pages.Length - 1;
+
+            switch (webRequest.result)
+            {
+                case UnityWebRequest.Result.ConnectionError:
+                case UnityWebRequest.Result.DataProcessingError:
+                    Debug.LogError(pages[page] + ": Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.ProtocolError:
+                    Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.Success:
+                    // results as byte array
+                    byte[] bytes = webRequest.downloadHandler.data;
+
+                    //Create texture2D
+                    Texture2D texture = new Texture2D(2, 2);
+                    texture.LoadImage(bytes);
+
+                    //Create sprite (to be placed in UI)
+                    Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+                    callback(sprite);
+                    break;
+            }
+        }
+    }
+
     public IEnumerator SellItem(string ID, string itemID, string userID)
     {
         string uri = urlHeader + "SellItem.php";
