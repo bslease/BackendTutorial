@@ -207,7 +207,7 @@ public class Web : MonoBehaviour
         }
     }
 
-    public IEnumerator GetItemIcon(string itemID, System.Action<Sprite> callback)
+    public IEnumerator GetItemIcon(string itemID, System.Action<byte[]> callback)
     {
         string uri = urlHeader + "GetItemIcon.php";
         WWWForm form = new WWWForm();
@@ -232,16 +232,10 @@ public class Web : MonoBehaviour
                     Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
                     break;
                 case UnityWebRequest.Result.Success:
+                    Debug.Log("DOWNLOADING ICON: " + itemID);
                     // results as byte array
                     byte[] bytes = webRequest.downloadHandler.data;
-
-                    //Create texture2D
-                    Texture2D texture = new Texture2D(2, 2);
-                    texture.LoadImage(bytes);
-
-                    //Create sprite (to be placed in UI)
-                    Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
-                    callback(sprite);
+                    callback(bytes);
                     break;
             }
         }

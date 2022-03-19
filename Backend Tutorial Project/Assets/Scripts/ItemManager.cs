@@ -65,13 +65,30 @@ public class ItemManager : MonoBehaviour
             itemGo.transform.Find("Name").GetComponent<Text>().text = itemInfoJson["name"];
             itemGo.transform.Find("Price").GetComponent<Text>().text = itemInfoJson["price"];
             itemGo.transform.Find("Description").GetComponent<Text>().text = itemInfoJson["description"];
-            
-            //Create a callback to get the SPRITE from Web.cs
-            Action<Sprite> getItemIconCallback = (downloadedSprite) =>
+
+            byte[] bytes = ImageManager.Instance.LoadImage(itemId);
+
+            //Download from web
+            if(bytes.Length == 0)
             {
-                itemGo.transform.Find("Image").GetComponent<Image>().sprite = downloadedSprite;
-            };
-            StartCoroutine(Main.Instance.Web.GetItemIcon(itemId, getItemIconCallback));
+                Action<byte[]> getItemIconCallback = (downloadedBytes) =>
+                {
+                    Sprite sprite = ImageManager.Instance.BytesToSprite(downloadedBytes);
+                    itemGo.transform.Find("Image").GetComponent<Image>().sprite = sprite;
+                    ImageManager.Instance.SaveImage(itemId, downloadedBytes);
+                };
+                StartCoroutine(Main.Instance.Web.GetItemIcon(itemId, getItemIconCallback));
+            }
+            //Load from device
+            else
+            {
+                Debug.Log("LOADING ICON FROM DEVICE: " + itemId);
+                Sprite sprite = ImageManager.Instance.BytesToSprite(bytes);
+                itemGo.transform.Find("Image").GetComponent<Image>().sprite = sprite;
+            }
+
+
+
 
             //Set Sell button
             itemGo.transform.Find("SellButton").GetComponent<Button>().onClick.AddListener(() =>
