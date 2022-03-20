@@ -100,7 +100,7 @@ public class Web : MonoBehaviour
             }
             else
             {
-                Debug.Log(www.downloadHandler.text);
+                Debug.Log("Attempting to login user id: " + www.downloadHandler.text);
                 Main.Instance.UserInfo.SetCredentials(username, password);
                 Main.Instance.UserInfo.SetID(www.downloadHandler.text);
 
@@ -111,6 +111,7 @@ public class Web : MonoBehaviour
                 }
                 else
                 {
+                    Debug.Log("login success!");
                     Main.Instance.UserProfile.SetActive(true);
                     Main.Instance.Login.gameObject.SetActive(false);
                 }
@@ -164,7 +165,8 @@ public class Web : MonoBehaviour
                     break;
                 case UnityWebRequest.Result.Success:
                     // Show results as text
-                    Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
+                    //Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
+                    //Debug.Log(webRequest.downloadHandler.text);
                     string jsonArray = webRequest.downloadHandler.text;
                     // Call callback function to pass results
                     callback(jsonArray);
@@ -199,6 +201,7 @@ public class Web : MonoBehaviour
                 case UnityWebRequest.Result.Success:
                     // Show results as text
                     //Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
+                    Debug.Log(webRequest.downloadHandler.text);
                     string jsonArray = webRequest.downloadHandler.text;
                     // Call callback function to pass results
                     callback(jsonArray);

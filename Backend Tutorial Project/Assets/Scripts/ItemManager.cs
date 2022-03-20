@@ -66,7 +66,9 @@ public class ItemManager : MonoBehaviour
             itemGo.transform.Find("Price").GetComponent<Text>().text = itemInfoJson["price"];
             itemGo.transform.Find("Description").GetComponent<Text>().text = itemInfoJson["description"];
 
-            byte[] bytes = ImageManager.Instance.LoadImage(itemId);
+            // get image version and send it to image manager
+            int imgVer = itemInfoJson["imgVer"].AsInt;
+            byte[] bytes = ImageManager.Instance.LoadImage(itemId, imgVer);
 
             //Download from web
             if(bytes.Length == 0)
@@ -75,7 +77,8 @@ public class ItemManager : MonoBehaviour
                 {
                     Sprite sprite = ImageManager.Instance.BytesToSprite(downloadedBytes);
                     itemGo.transform.Find("Image").GetComponent<Image>().sprite = sprite;
-                    ImageManager.Instance.SaveImage(itemId, downloadedBytes);
+                    ImageManager.Instance.SaveImage(itemId, downloadedBytes, imgVer);
+                    ImageManager.Instance.SaveVersionJson();
                 };
                 StartCoroutine(Main.Instance.Web.GetItemIcon(itemId, getItemIconCallback));
             }
@@ -86,9 +89,6 @@ public class ItemManager : MonoBehaviour
                 Sprite sprite = ImageManager.Instance.BytesToSprite(bytes);
                 itemGo.transform.Find("Image").GetComponent<Image>().sprite = sprite;
             }
-
-
-
 
             //Set Sell button
             itemGo.transform.Find("SellButton").GetComponent<Button>().onClick.AddListener(() =>

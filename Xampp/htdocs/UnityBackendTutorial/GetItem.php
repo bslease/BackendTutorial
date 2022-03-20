@@ -12,7 +12,7 @@ if ($conn->connect_error) {
 // $loginPass = $_POST["loginPass"];
 $itemID = $_POST["itemID"];
 
-$sql = "SELECT name, description, price FROM items WHERE ID = '" . $itemID . "'";
+$sql = "SELECT name, description, price, imgVer FROM items WHERE ID = '" . $itemID . "'";
 
 $result = $conn->query($sql);
 
